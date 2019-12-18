@@ -32,7 +32,7 @@ public class IndexController {
     private ICategoryService categoryService;
 
     @ApiOperation(value = "获取首页轮播图",notes = "获取首页轮播图",httpMethod = "GET")
-    @GetMapping("carousels")
+    @GetMapping("carousel")
     public IMOOCJSONResult index(){
 
         List<Carousel> carousels = carouselService.queryAll(YesOrNo.Yes.type);
