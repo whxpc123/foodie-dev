@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.imooc.mapper.CategoryMapperCustom" >
+
+
+  <resultMap id="getMyCatList" type="com.imooc.pojo.vo.CategoryVO">
+    <id column="id" property="id"  />
+    <result column="name" property="name"  />
+    <result column="type" property="type"  />
+    <result column="fatherId" property="fatherId" />
+    <collection property="subCatList"  ofType="com.imooc.pojo.vo.SubCategoryVO">
+      <id column="subId" property="subId"  />
+      <result column="subName" property="subName"  />
+      <result column="subType" property="subType"  />
+      <result column="subFatherId" property="subFatherId" />
+    </collection>
+  </resultMap>
+
+  <select id="getSubCatList" parameterType="int" resultMap="getMyCatList">
+    select f.id id,f.`name` name,f.type type,f.father_id fatherId,c.id subId,c.`name` subName,c.type subType,c.father_id subFatherId
+    from category f
+    left join category c
+    on f.id =c.father_id
+    where f.father_id = #{rootId}
+  </select>
+
+  <select id="getSixNewItemsLazy" parameterType="map" resultMap="MyNewItems">
+    select c.id rootCatId,c.`name` rootCatName,c.slogan slogan,c.cat_image catImage,c.bg_color bgColor,i.id itemId,i.`item_name` itemName,img.url itemUrl,img.created_time createdTime
+    from category c
+    left join items i
+    on i.root_cat_id = c.id
+    left join items_img img
+    on i.id = img.item_id
+    where c.type = 1
+    and  i.root_cat_id = #{paramsMap.rootCatId}
+    and img.is_main =1
+    order by img.created_time desc
+    limit 0,6
+  </select>
+  <resultMap id="MyNewItems" type="com.imooc.pojo.vo.NewItemsVO">
+    <id column="rootCatId" property="rootCatId"  />
+    <result column="rootCatName" property="rootCatName"  />
+    <result column="slogan" property="slogan"  />
+    <result column="catImage" property="catImage" />
+    <result column="bgColor" property="bgColor" />
+    <collection property="simpleItemList" ofType="com.imooc.pojo.vo.SimpleItemVO">
+      <id column="itemId" property="itemId"  />
+      <result column="itemName" property="itemName"  />
+      <result column="itemUrl" property="itemUrl"  />
+    </collection>
+  </resultMap>
+
+</mapper>
