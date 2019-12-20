@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.imooc.mapper.ItemsMapperCustom" >
+
+  <select id="searchItems" parameterType="map" resultType="com.imooc.pojo.vo.SearchItemsVo">
+    select i.id itemId,i.item_name itemName,i.sell_counts sellCounts,ii.url imgUrl,tempSpec.price price
+    from items i
+    left join items_img  ii
+    on i.id = ii.item_id
+    left join
+    (
+        SELECT item_id,min(price_discount) price
+        from items_spec
+        group by item_id
+    ) tempSpec
+    on i.id =tempSpec.item_id
+    where ii.is_main =1
+    <if test="paramsMap.keyword !=null and paramsMap.keyword !='' ">
+        and i.item_name like '%${paramsMap.keyword}%'
+    </if>
+    order by
+    <choose>
+      <when test="paramsMap.sort == &quot;c&quot;">
+        i.sell_counts desc
+      </when>
+      <when test="paramsMap.sort == &quot;p&quot;">
+        tempSpec.price asc
+      </when>
+      <otherwise>
+        i.item_name asc
+      </otherwise>
+    </choose>
+  </select>
+
+  <select id="searchItemsByCatId" parameterType="map" resultType="com.imooc.pojo.vo.SearchItemsVo">
+    select i.id itemId,i.item_name itemName,i.sell_counts sellCounts,ii.url imgUrl,tempSpec.price price
+    from items i
+    left join items_img  ii
+    on i.id = ii.item_id
+    left join
+    (
+    SELECT item_id,min(price_discount) price
+    from items_spec
+    group by item_id
+    ) tempSpec
+    on i.id =tempSpec.item_id
+    where ii.is_main =1
+    and i.cat_id = #{paramsMap.catId}
+    order by
+    <choose>
+      <when test="paramsMap.sort == &quot;c&quot;">
+        i.sell_counts desc
+      </when>
+      <when test="paramsMap.sort == &quot;p&quot;">
+        tempSpec.price asc
+      </when>
+      <otherwise>
+        i.item_name asc
+      </otherwise>
+    </choose>
+  </select>
+  
+  <select id="queryItemsBySpecIds" parameterType="List" resultType="com.imooc.pojo.vo.ShopCartVO">
+    SELECT items.id itemId,items.item_name itemName,img.url itemImgUrl,spec.id specId,spec.`name` specName,spec.price_discount priceDisCount,spec.price_normal priceNormal
+    FROM items_spec spec
+    LEFT JOIN items items
+    ON spec.item_id =items.id
+    LEFT JOIN items_img img
+    on img.item_id = items.id
+    where img.is_main = 1
+    and spec.id in
+    <foreach collection="paramsList"  item="specId" open="(" separator="," close=")">
+      #{specId}
+    </foreach>
+  </select>
+</mapper>
