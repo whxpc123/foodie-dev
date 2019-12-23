@@ -1,8 +1,15 @@
 package com.imooc.pojo;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.Date;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "order_status")
 public class OrderStatus {
     /**

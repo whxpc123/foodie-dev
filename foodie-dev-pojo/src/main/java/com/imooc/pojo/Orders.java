@@ -1,8 +1,11 @@
 package com.imooc.pojo;
 
+import lombok.Builder;
+
 import javax.persistence.*;
 import java.util.Date;
 
+@Builder
 public class Orders {
     /**
      * 订单主键;同时也是订单编号

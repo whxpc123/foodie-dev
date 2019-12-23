@@ -33,4 +33,10 @@ public interface IItemService {
     PagedGridResult searchItems(Integer catId,String sort,Integer page,Integer pageSize);
 
     List<ShopCartVO> queryItemsBySpecIds(String specIds);
+
+    ItemsSpec queryItemSpecBySpeId(String specId);
+
+    String queryMainImgById(String itemId);
+
+    void decreaseItemSpecStock(String specId,Integer buyCounts);
 }

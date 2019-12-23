@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Maps;
 import com.imooc.enums.CommentLevel;
+import com.imooc.enums.YesOrNo;
 import com.imooc.mapper.*;
 import com.imooc.pojo.*;
 import com.imooc.pojo.vo.CommentLevelCountsVO;
@@ -159,6 +160,31 @@ public class ItemServiceImpl  implements IItemService {
         String[] specIdArray = specIds.split(",");
         List<String> specIdList = Arrays.asList(specIdArray);
         return itemsMapperCustom.queryItemsBySpecIds(specIdList);
+    }
+
+    @Override
+    public ItemsSpec queryItemSpecBySpeId(String specId) {
+
+        return itemsSpecMapper.selectByPrimaryKey(specId);
+    }
+
+    @Override
+    public String queryMainImgById(String itemId) {
+        ItemsImg itemsImg = new ItemsImg();
+        itemsImg.setItemId(itemId);
+        itemsImg.setIsMain(YesOrNo.Yes.type);
+        ItemsImg result = itemsImgMapper.selectOne(itemsImg);
+        return result==null ? "":result.getUrl();
+    }
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void decreaseItemSpecStock(String specId, Integer buyCounts) {
+        //查询库存
+        int result = itemsMapperCustom.decreaseItemSpecStock(specId, buyCounts);
+        if(result != 1){
+            throw new RuntimeException("库存不足，创建订单失败");
+        }
+        //判断库存
     }
 
     private PagedGridResult setPagedGrid(List<?> list,Integer page){

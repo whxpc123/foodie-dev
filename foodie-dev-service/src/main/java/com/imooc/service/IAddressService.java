@@ -16,4 +16,6 @@ public interface IAddressService {
     void deleteUserAddress(String userId,String addressId);
 
     void setDefaultAddress(String userId,String addressId);
+
+    UserAddress queryByUserIdAndAddressId(String userId,String addressId);
 }

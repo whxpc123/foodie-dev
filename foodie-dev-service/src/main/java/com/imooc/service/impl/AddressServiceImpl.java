@@ -89,4 +89,13 @@ public class AddressServiceImpl  implements IAddressService {
 
     }
 
+    @Override
+    public UserAddress queryByUserIdAndAddressId(String userId, String addressId) {
+        UserAddress userAddress = new UserAddress();
+        userAddress.setId(userId);
+        userAddress.setId(addressId);
+
+        return userAddressMapper.selectOne(userAddress);
+    }
+
 }

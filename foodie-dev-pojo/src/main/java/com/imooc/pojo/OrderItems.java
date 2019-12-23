@@ -1,7 +1,10 @@
 package com.imooc.pojo;
 
+import lombok.Builder;
+
 import javax.persistence.*;
 
+@Builder
 @Table(name = "order_items")
 public class OrderItems {
     /**

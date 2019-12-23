@@ -38,7 +38,7 @@ public class PassportController {
 
     @ApiOperation(value = "用户注册",notes = "注册用户",httpMethod = "POST")
     @PostMapping("regist")
-    public IMOOCJSONResult register(@RequestBody UserBO userBO){
+    public IMOOCJSONResult register(@RequestBody UserBO userBO,HttpServletRequest request,HttpServletResponse response){
         BeanValidator.check(userBO);
         if(!userBO.getPassword().equals(userBO.getConfirmPassword())){
             return IMOOCJSONResult.errorMsg("两次密码输入不一致");
@@ -48,13 +48,14 @@ public class PassportController {
             return IMOOCJSONResult.errorMsg("用户名已存在");
         }
         Users user = userService.createUser(userBO);
+        CookieUtils.setCookie(request,response,"user", JsonUtils.objectToJson(user),true);
         return IMOOCJSONResult.ok(user);
     }
 
     @ApiOperation(value = "用户登录",notes = "用户登录",httpMethod = "POST")
     @PostMapping("login")
     public IMOOCJSONResult login(@RequestBody UserBO userBO, HttpServletRequest request, HttpServletResponse response) throws Exception{
-        BeanValidator.check(userBO);
+        //BeanValidator.check(userBO);
         Users users = userService.queryUserForLogin(userBO.getUsername(), MD5Utils.getMD5Str(userBO.getPassword()));
         if(Objects.isNull(users)){
             return IMOOCJSONResult.errorMsg("用户名或密码不正确");
