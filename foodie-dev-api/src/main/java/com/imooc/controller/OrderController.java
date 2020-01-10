@@ -22,7 +22,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@Api(value = "d订单相关",tags = {"订单相关的api接口"})
+@Api(value = "订单相关",tags = {"订单相关的api接口"})
 @RestController
 @RequestMapping("orders")
 public class OrderController {

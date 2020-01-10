@@ -14,4 +14,31 @@
     </if>
 
   </select>
+
+  <select id="saveComments" parameterType="map">
+    insert into items_comments(id,user_id,item_id,item_name,item_spec_id,sepc_name,comment_level,content,created_time,updated_time)
+    values
+     <foreach collection="commentList" item="comment" separator=",">
+     (#{comment.commentId},#{userId},#{comment.itemId},#{comment.itemName},#{comment.itemSpecId},#{comment.itemSpecName},#{comment.commentLevel},#{comment.content},now(),now())
+     </foreach>
+  </select>
+
+  <resultMap id="myComments" type="com.imooc.pojo.vo.MyCommentsVO">
+    <id column="commentId" property="commentId"  />
+    <result column="content" property="content"  />
+    <result column="createdTime" property="createdTime"  />
+    <result column="itemId" property="itemId" />
+    <result column="itemName" property="itemName" />
+    <result column="specName" property="specName" />
+    <result column="itemImg" property="itemImg" />
+  </resultMap>
+  <select id="queryMyComments" parameterType="map" resultMap="myComments">
+    SELECT comments.id commentId,comments.content content,comments.created_time createdTime,comments.item_id itemId,comments.item_name itemName,comments.sepc_name specName,img.url itemImg
+    FROM items_comments comments
+    LEFT JOIN items_img img
+    on img.item_id = comments.item_id
+    where comments.user_id = #{paramsMap.userId}
+    and img.is_main =1
+    order by comments.created_time desc
+  </select>
 </mapper>

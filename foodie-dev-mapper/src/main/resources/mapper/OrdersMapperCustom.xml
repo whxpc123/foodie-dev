@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.imooc.mapper.OrdersMapperCustom" >
+
+
+  <resultMap id="myOrdersVO" type="com.imooc.pojo.vo.MyOrdersVO">
+    <id column="orderId" property="orderId"  />
+    <result column="createdTime" property="createdTime"  />
+    <result column="payMethod" property="payMethod"  />
+    <result column="realPayAmount" property="realPayAmount" />
+    <result column="postAmount" property="postAmount" />
+    <result column="orderStatus" property="orderStatus" />
+    <result column="isComment" property="isComment" />
+    <collection property="subOrderItemList"  select="getSubItems" column="orderId" ofType="com.imooc.pojo.vo.MySubOrderItemVO">
+      <result column="itemId" property="itemId"  />
+      <result column="itemName" property="itemName"  />
+      <result column="itemImg" property="itemImg" />
+      <result column="itemSpecName" property="itemSpecName"  />
+      <result column="buyCounts" property="buyCounts" />
+      <result column="price" property="price"  />
+    </collection>
+  </resultMap>
+
+  <select id="queryMyOrders" parameterType="map" resultMap="myOrdersVO">
+      SELECT orders.id orderId,orders.created_time createdTime,orders.pay_method payMethod,orders.real_pay_amount realPayAmount,
+      orders.post_amount postAmount,statu.order_status orderStatus,orders.is_comment isComment
+      FROM orders orders
+      LEFT JOIN order_status statu
+      ON orders.id = statu.order_id
+      WHERE orders.user_id = #{paramsMap.userId}
+      AND orders.is_delete = 0
+      <if test="paramsMap.orderStatus !=null and paramsMap.orderStatus != ''">
+         and statu.order_status =#{paramsMap.orderStatus}
+      </if>
+      ORDER BY orders.updated_time DESC
+  </select>
+
+    <select id="getSubItems" parameterType="String" resultType="map">
+        select items.item_id itemId,items.item_name itemName,items.item_img itemImg,items.item_spec_name itemSpecName,items.buy_counts buyCounts,items.price price
+        from order_items items
+        where items.order_id = #{orderId}
+    </select>
+
+    <select id="getMyOrderStatusCounts" parameterType="map" resultType="int">
+        SELECT COUNT(1)
+        FROM orders orders
+        LEFT JOIN order_status statu
+        ON orders.id = statu.order_id
+        WHERE orders.user_id = #{paramsMap.userId}
+        and statu.order_status = #{paramsMap.orderStatusid
+        <if test="paramsMap.isComment !=null and paramsMap.isComment !='' ">
+            orders.is_comment =#{paramsMap.isComment}
+        </if>
+    </select>
+
+    <select id="getMyOrderTrend" parameterType="map" resultType="com.imooc.pojo.OrderStatus">
+        SELECT orders.id orderId,statu.order_status orderStatus,statu.created_time createdTime,statu.pay_time payTime,statu.deliver_time deliverTime,statu.success_time successTime,statu.close_time closeTime,statu.comment_time commentTime
+        FROM orders orders
+        LEFT JOIN order_status statu
+        ON orders.id = statu.order_id
+        WHERE orders.user_id =#{paramsMap.userId}
+        and statu.order_status in(20,30,40)
+        ORDER BY orders.id desc
+    </select>
+
+</mapper>

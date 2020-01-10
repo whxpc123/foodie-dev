@@ -1,0 +1,17 @@
+server:
+  port: 8088
+
+############################################################
+#
+# 配置数据源信息
+#
+############################################################
+spring:
+  datasource:                                           # 数据源的相关配置
+    url: jdbc:mysql://123.56.128.40:3306/foodie-shop-dev?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+    password: root
+  redis:
+    database: 1
+      host: 123.56.128.40
+      port: 6379
+      password: root

@@ -105,7 +105,7 @@ public class OrderServiceImpl implements IOrderService {
                 .merchantUserId(submitOrderBo.getUserId())
                 .amount(realPayAmount + postAmount)
                 .payMethod(submitOrderBo.getPayMethod())
-                .returnUrl("http://adgipd.natappfree.cc/orders/notifyMerchantOrderPaid")
+                .returnUrl("http://123.56.128.40:8088/orders/notifyMerchantOrderPaid")
                 .build();
 
         OrderVO orderVO = new OrderVO();

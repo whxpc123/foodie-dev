@@ -1,11 +1,15 @@
 package com.imooc.pojo;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Orders {
     /**
      * 订单主键;同时也是订单编号
